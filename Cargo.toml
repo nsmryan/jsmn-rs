@@ -1,0 +1,11 @@
+[package]
+name = "jsmn-rs"
+version = "0.1.0"
+authors = ["Noah Ryan <noah.m.ryan@nasa.gov>"]
+build="build.rs"
+
+[dependencies]
+
+[build-dependencies]
+cc="1.0.25"
+bindgen="0.26.3"
