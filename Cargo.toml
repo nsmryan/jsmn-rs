@@ -1,8 +1,11 @@
 [package]
 name = "jsmn-rs"
 version = "0.1.0"
-authors = ["Noah Ryan <noah.m.ryan@nasa.gov>"]
+authors = ["Noah Ryan <nsmryan@gmail.com>"]
+readme="README.md"
+license="MIT"
 build="build.rs"
+keyworks=["parser", "json", "ffi"]
 
 [dependencies]
 

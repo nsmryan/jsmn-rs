@@ -1,12 +1,41 @@
+//!
+//! This crate exposes Rustic bindings to a gem of a C library called jsmn.
+//! The raw bindings are available in the raw module, which are wrapped in
+//! this module.
+//! 
+//!
+//! The jsmn library provides a very simple, fast JSON parser. I see it as a
+//! great example of library design- it has two enums, two structs, and two functions,
+//! and that is all. Its trivial to use, very fast, and has very few extra features.
+//!
+//!
+//! This library only exposes a single function, jsmn_parse, because the jsmn_init
+//! function is called when you crate a new JsmnParser.
+//! 
+//! 
+//! To use this library, simply create a parser using JsmnParser::new()
+//! and pass the parser, a JSON string, and a slice of JsmnToks to jsmn_parse.
+//! The result will be that the slice will be filled out with tokens defining the
+//! starting and ending offset of each JSON token in the given string.
+//!
+//!
+//! Thats all there is to it! This crate is just intended to make jsmn easy to use
+//! in Rust. There are other JSON parsers in Rust, and certainly Serde and HyperJson
+//! are great crates, but I though jsmn deserved a place in the Rust ecosystem, so here
+//! it is!
+//!
+
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
 use std::mem::transmute;
 
-mod raw;
+pub mod raw;
 
 
+/// The JSON object type. These enum values are identical to the jsmn library
+/// enum jsmntype_t, but renamed to match Rust's conventions.
 #[repr(i32)]
 #[derive(Debug, Copy, Clone)]
 pub enum JsmnType {
@@ -17,6 +46,8 @@ pub enum JsmnType {
     JsmnPrimitive = raw::jsmntype_t::JSMN_PRIMITIVE as i32,
 }
 
+/// Error type from jsmn_parse. These enum values are identical to the jsmn library
+/// enum jsmnerr_t, but renamed to match Rust's conventions.
 #[repr(i32)]
 #[derive(Debug, Copy, Clone)]
 pub enum JsmnErr {
@@ -25,6 +56,9 @@ pub enum JsmnErr {
     JsmErrorPart  = raw::jsmnerr::JSMN_ERROR_PART  as i32,
 }
 
+/// A JSON token structure, defining which type of JSON object it is, the starting
+/// character, ending character, and size in bytes. All offsets are from the start
+/// of the parsed string.
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JsmnTok {
@@ -62,6 +96,7 @@ impl Default for JsmnTok {
     }
 }
 
+/// A JsmnParser is the parser state for the jsmn library.
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JsmnParser {
@@ -71,14 +106,18 @@ pub struct JsmnParser {
 }
 
 impl JsmnParser {
-    pub fn new(pos      : usize,
-               toknext  : usize,
-               toksuper : usize) -> Self {
-        JsmnParser {
-            pos      : pos,
-            toknext  : toknext,
-            toksuper : toksuper
+    pub fn new() -> Self {
+        let parser = 
+            JsmnParser {
+                pos      : 0,
+                toknext  : 0,
+                toksuper : 0
+            };
+        unsafe {
+            raw::jsmn_init(transmute(&parser));
         }
+
+        parser
     }
 }
 
@@ -95,19 +134,23 @@ impl Default for JsmnParser {
     }
 }
 
-pub fn jsmn_init(parser: &mut JsmnParser) {
-    unsafe {
-        raw::jsmn_init(transmute(parser));
-    }
-}
-
+/// This function is the core parsing function. It wraps the underlying
+/// jsmn_parse function in a more Rustic interface by taking a slice
+/// of JsmnTokens, and returning a Result instead of using sentinal values.
+///
+///
+/// Simply provide a JsmnParser, a string, and a slice of JsmnTokens,
+/// and the tokens will point to the locations of each JSON object within the
+/// string.
+///
+/// If the function succeeds, it will return a usize giving how many
+/// tokens were parsed, and on error it will return an JsmnErr describing the
+/// problem encountered while parsing.
 pub fn jsmn_parse(parser: &mut JsmnParser,
                   js: &str,
                   tokens: &mut [JsmnTok]) -> Result<usize, JsmnErr> {
-    let mut result :i32 = 0;
+    let result : i32;
 
-    println!("json len = {}", js.len());
-    println!("tokens len = {}", tokens.len());
     unsafe {
         result = raw::jsmn_parse(transmute(parser),
                                  transmute(js.as_ptr()),
@@ -130,7 +173,7 @@ mod test {
 
     #[test]
     fn test_parse() {
-        let mut parser : JsmnParser = Default::default();
+        let mut parser = JsmnParser::new();
         let json = "{\"test\":1}";
         let mut tokens : [JsmnTok; 20] = [Default::default(); 20];
 
