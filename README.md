@@ -11,9 +11,9 @@ The thing I love most about this library is its simplicity- it contains exactly
 
 
 The rustic wrapping includes using bindgen to generate raw bindings, available from
-the raw module, and then: wrapping those up in standard rust naming conventions,
-using slices instead of pointers and lengths, and returning a Result from jsmn\_parse
-instead of a number that can be an error code or count.
+the raw module, and then wrapping those up in standard rust naming conventions.
+This means using slices instead of pointers and lengths, and returning a Result
+from jsmn\_parse instead of a number that can be an error code or count.
 
 # TODO
 More testing would be nice to ensure that the interface works as expected.
@@ -26,8 +26,6 @@ I tried to use isize and usize to make this okay, but for some casts it
 might still be a problem.
 
 add features for compiler flags for parent pointers and permissive parsing.
-
-Finish Cargo.toml
 
 Finish README.md
 
