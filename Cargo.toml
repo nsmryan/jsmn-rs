@@ -6,9 +6,15 @@ readme="README.md"
 license="MIT"
 build="build.rs"
 keyworks=["parser", "json", "ffi"]
+links="jsmn"
 
 [dependencies]
 
 [build-dependencies]
 cc="1.0.25"
 bindgen="0.26.3"
+
+[features]
+parent-links = []
+strict = []
+
