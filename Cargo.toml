@@ -1,6 +1,6 @@
 [package]
 name = "jsmn-rs"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Noah Ryan <nsmryan@gmail.com>"]
 readme="README.md"
 license="MIT"

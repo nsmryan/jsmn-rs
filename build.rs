@@ -24,6 +24,12 @@ fn main() {
     // Generate bindings for jsmn
     let bindings = bindgen::Builder::default()
         .header("src/jsmn/jsmn.h")
+        .whitelisted_type("jsmntype_t")
+        .whitelisted_type("jsmnerr")
+        .whitelisted_type("jsmntok_t")
+        .whitelisted_type("jsmn_parser")
+        .whitelisted_function("jsmn_init")
+        .whitelisted_function("jsmn_parse")
         .generate()
         .expect("Unable to generate bindings!");
 

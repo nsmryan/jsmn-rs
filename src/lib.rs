@@ -40,9 +40,9 @@ pub mod raw;
 #[derive(Debug, Copy, Clone)]
 pub enum JsmnType {
     JsmnUndefined = raw::jsmntype_t::JSMN_UNDEFINED as i32,
-    JsmnObject    = raw::jsmntype_t::JSMN_OBJECT as i32,
-    JsmnArray     = raw::jsmntype_t::JSMN_ARRAY as i32,
-    JsmnString    = raw::jsmntype_t::JSMN_STRING as i32,
+    JsmnObject    = raw::jsmntype_t::JSMN_OBJECT    as i32,
+    JsmnArray     = raw::jsmntype_t::JSMN_ARRAY     as i32,
+    JsmnString    = raw::jsmntype_t::JSMN_STRING    as i32,
     JsmnPrimitive = raw::jsmntype_t::JSMN_PRIMITIVE as i32,
 }
 
@@ -66,11 +66,11 @@ pub enum JsmnErr {
 #[derive(Debug, Copy)]
 pub struct JsmnTok {
     pub typ    : JsmnType,
-    pub start  : i32,
-    pub end    : i32,
-    pub size   : i32,
+    pub start  : isize,
+    pub end    : isize,
+    pub size   : isize,
 #[cfg(feature="parent-links")]
-    pub parent : i32,
+    pub parent : isize,
 }
 
 impl JsmnTok {
@@ -108,7 +108,7 @@ impl Default for JsmnTok {
 pub struct JsmnParser {
     pub pos      : usize,
     pub toknext  : usize,
-    pub toksuper : usize,
+    pub toksuper : isize,
 }
 
 impl JsmnParser {
