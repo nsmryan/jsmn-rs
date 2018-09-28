@@ -62,22 +62,23 @@ pub enum JsmnErr {
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JsmnTok {
-    pub typ   : JsmnType,
-    pub start : i32,
-    pub end   : i32,
-    pub size  : i32,
+    pub typ    : JsmnType,
+    pub start  : i32,
+    pub end    : i32,
+    pub size   : i32,
+#[cfg(feature="parent-links")]
+    pub parent : i32,
 }
 
 impl JsmnTok {
-    pub fn new(typ   : JsmnType,
-               start : i32,
-               end   : i32,
-               size  : i32) -> Self {
+    pub fn new() -> Self {
         JsmnTok {
-            typ   : typ,
-            start : start,
-            end   : end,
-            size  : size,
+            typ    : JsmnType::JsmnUndefined,
+            start  : 0,
+            end    : 0,
+            size   : 0,
+#[cfg(feature="parent-links")]
+            parent : 0
         }
     }
 }
@@ -88,10 +89,12 @@ impl Clone for JsmnTok {
 
 impl Default for JsmnTok {
     fn default() -> Self {
-        JsmnTok { typ   : JsmnType::JsmnUndefined,
-                  start : 0,
-                  end   : 0,
-                  size  : 0,
+        JsmnTok { typ    : JsmnType::JsmnUndefined,
+                  start  : 0,
+                  end    : 0,
+                  size   : 0,
+#[cfg(feature="parent-links")]
+                  parent : 0
                 }
     }
 }
@@ -177,10 +180,10 @@ mod test {
         let json = "{\"test\":1}";
         let mut tokens : [JsmnTok; 20] = [Default::default(); 20];
 
-        jsmn_init(&mut parser);
         let result = jsmn_parse(&mut parser, json, &mut tokens);
 
         println!("{:?}", &tokens[..]);
         println!("{:?}", result);
     }
 }
+

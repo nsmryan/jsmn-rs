@@ -1,0 +1,13 @@
+[package]
+name = "basic"
+version = "0.1.0"
+authors = ["Noah Ryan <nsmryan@gmail.com>"]
+license="MIT"
+
+[[bin]]
+name="basic"
+
+[dependencies.jsmn_rs]
+jsmn-rs="0.1.0"
+features = ["parent-links"]
+
