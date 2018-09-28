@@ -59,6 +59,9 @@ pub enum JsmnErr {
 /// A JSON token structure, defining which type of JSON object it is, the starting
 /// character, ending character, and size in bytes. All offsets are from the start
 /// of the parsed string.
+///
+/// Note that if the parent-links feature is used, then this struct will
+/// have the "parent" field, and otherwise it will not.
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JsmnTok {
