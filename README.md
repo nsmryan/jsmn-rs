@@ -33,5 +33,5 @@ whether the use of "int" in the C source will cause problems here.
 I tried to use isize and usize to make this okay, but for some casts it
 might still be a problem.
 
-There are very few tests and very little example code on how to use the library.
+There are also very few tests and very little example code on how to use the library.
 
