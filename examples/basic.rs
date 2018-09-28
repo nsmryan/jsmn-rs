@@ -11,8 +11,6 @@ fn main() {
 
     let mut tokens = [JsmnTok::new(); 20];
     
-    let token = JsmnTok::new();
-
     let count = jsmn_parse(&mut parser, JSON, &mut tokens).unwrap();
 
     assert!(count == 3);
